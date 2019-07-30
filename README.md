@@ -2,6 +2,8 @@
 
 > 특정 고객 거래내역 조회 서비스 개발. 고객을 타겟팅하기 위한 지점 마케팅 API를 개발한다.
 
+
+
   
 ### 개발 환경
 * Backend
@@ -68,27 +70,27 @@ url: http://localhost:8088
   
   
 ### API 정보
-## 1. 기본 정보
-# 1.1 Data type : json
-# 1.2 API documentation : swagger-ui
+#### 1. 기본 정보
+##### 1.1 Data type : json
+##### 1.2 API documentation : swagger-ui
     - URL : /swagger-ui.html
-## 2. API 목록
-# 2.1 연도별 합계 금액 가장 많은 고객 조회
+#### 2. API 목록
+##### 2.1 연도별 합계 금액 가장 많은 고객 조회
 Method : GET
 URL : /kakaopay/api/v1
 Parameter : -
 
-# 2.2 연간 거래가 없는 고객 조회
+##### 2.2 연간 거래가 없는 고객 조회
 Method : GET
 URL : /kakaopay/api/v2
 Parameter : -
 
-# 2.3 연도별 관리점별 거래금액 합계 목록 조회
+##### 2.3 연도별 관리점별 거래금액 합계 목록 조회
 Method : GET
 URL : /kakaopay/api/v3
 Parameter : -
 
-# 2.4 관리점별 거래금액 합계 목록 조회
+##### 2.4 관리점별 거래금액 합계 목록 조회
 Method : GET
 URL : /kakaopay/api/v4
 Parameter : {"brName": "판교점"}
