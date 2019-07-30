@@ -11,7 +11,7 @@ CREATE TABLE TRSC_HIST (
 	PRIMARY KEY (TRSC_DT, ACCT_NO, TRSC_NO)
 ) AS
 SELECT *
-  FROM CSVREAD('classpath:/sqlmap/data/데이터_거래내역.csv');
+  FROM CSVREAD('classpath:/sqlmap/data/data_transaction_history.csv');
 
 
 -- 관리점 정보 테이블
@@ -22,7 +22,7 @@ CREATE TABLE BR_INFO (
 	BR_NAME VARCHAR(500)
 ) AS
 SELECT *
-  FROM CSVREAD('classpath:/sqlmap/data/데이터_관리점정보.csv');
+  FROM CSVREAD('classpath:/sqlmap/data/data_branch_information.csv');
 
 
 -- 계좌정보 테이블
@@ -35,4 +35,4 @@ CREATE TABLE ACCT_INFO (
 	PRIMARY KEY (ACCT_NO, BR_CODE)	
 ) AS
 SELECT *
-  FROM CSVREAD('classpath:/sqlmap/data/데이터_계좌정보.csv');
+  FROM CSVREAD('classpath:/sqlmap/data/data_account_information.csv');
