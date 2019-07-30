@@ -7,7 +7,7 @@
 * 고객 데이터
 * 지점 데이터
 * 데이터는 CSV 파일로 저장되어 있음
-* 위 각 데이터는 테이블에 insert 되어 있다고 가정한다.
+* 위 각 데이터는 테이블에 insert 되어 있다고 가정한다.[^1]
   
   
 ### API 기능 명세
@@ -57,7 +57,7 @@ java -jar -Dfile.encoding=UTF-8 minichExam-0.0.1.jar
 url: http://localhost:8088
 ```
   
-
+  
 ### API 정보
 1. 기본 정보
 1.1 Data type : json
@@ -83,9 +83,11 @@ Parameter : -
 Method : GET
 URL : /kakaopay/api/v4
 Parameter 
-  
-  
 |이름|data type|request type|필수여부|
-|---|:---:|---:|---:|
+|---|:---:|:---:|:---:|
 | `brName` | `String` | `body` | Y |
+
+
+### 고려사항
+1.  데이터에서 [정의](#1)된 제약조건대로 CSV로된 데이터 파일을 기반으로 하여 결과를 조회해야 하기 때문에
 
