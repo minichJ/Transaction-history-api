@@ -93,7 +93,8 @@ Parameter : -
 2.4 관리점별 거래금액 합계 목록 조회  
 Method : GET  
 URL : /kakaopay/api/v4  
-Parameter : 
+Parameter 
+
 예시 : `{"brName": "판교점"}`  
 허용값 : `"판교점", "분당점", "강남점", "잠실점"`
 
