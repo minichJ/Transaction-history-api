@@ -79,24 +79,28 @@ url: http://localhost:8088
 #### 2. API 목록
 
 2.1 연도별 합계 금액 가장 많은 고객 조회
+
 Method : GET
 URL : /kakaopay/api/v1
 Parameter : -
 
 
 2.2 연간 거래가 없는 고객 조회
+
 Method : GET
 URL : /kakaopay/api/v2
 Parameter : -
   
   
 2.3 연도별 관리점별 거래금액 합계 목록 조회
+
 Method : GET
 URL : /kakaopay/api/v3
 Parameter : -
 
   
 2.4 관리점별 거래금액 합계 목록 조회 
+
 Method : GET  
 URL : /kakaopay/api/v4  
 Parameter 
