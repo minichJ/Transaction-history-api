@@ -43,7 +43,19 @@
     
   
 ### 실행방법
-`입력테스트`
-```으으으으```
+```
+# ** Console **
+cd ${project_dir}
+mvn clean package 
+cd ${test}
+java -jar -Dfile.encoding=UTF-8 minichExam-0.0.1.jar
+  
+# ** STS or Eclipse **
+1. maven update
+2. run Spring Boot App
+
+# ** Web-browser **
+url: http://localhost:8088
+```
   
   
