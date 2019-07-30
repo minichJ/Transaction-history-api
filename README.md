@@ -69,19 +69,19 @@ url: http://localhost:8088
 * 단위 테스트의 경우 junit을 통하여 url에 대한 호출 및 응답에 대한 테스트를 수행
   
   
-### API 정보
-#### 1. 기본 정보
-1.1 Data type : json
-1.2 API documentation : swagger-ui
-    - URL : /swagger-ui.html
+### API 정보  
+#### 1. 기본 정보  
+1.1 Data type : json  
+1.2 API documentation : swagger-ui  
+    - URL : /swagger-ui.html  
     
     
 #### 2. API 목록
 
 2.1 연도별 합계 금액 가장 많은 고객 조회  
-Method : GET
-URL : /kakaopay/api/v1
-Parameter : -
+Method : GET  
+URL : /kakaopay/api/v1  
+Parameter : -  
 
 
 2.2 연간 거래가 없는 고객 조회  
