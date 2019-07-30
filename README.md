@@ -84,16 +84,16 @@ Parameter : -
 Method : GET
 URL : /kakaopay/api/v2
 Parameter : -
-
+  
 2.3 연도별 관리점별 거래금액 합계 목록 조회
 Method : GET
 URL : /kakaopay/api/v3
 Parameter : -
-
-2.4 관리점별 거래금액 합계 목록 조회
-Method : GET
-URL : /kakaopay/api/v4
-Parameter : {"brName": "판교점"}
+  
+2.4 관리점별 거래금액 합계 목록 조회  
+Method : GET  
+URL : /kakaopay/api/v4  
+Parameter : `{"brName": "판교점"}`
 |이름|data type|request type|필수여부|
 |---|:---:|:---:|:---:|
 | `brName` | `String` | `body` | Y |
