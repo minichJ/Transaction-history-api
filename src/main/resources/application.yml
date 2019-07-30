@@ -1,0 +1,27 @@
+server: 
+  port: 8088 
+
+spring:
+  h2:
+    console:
+      enabled: true
+#      path: /h2-console-test
+#      
+#  datasource:
+#    driver-class-name: org.h2.Driver
+#    url: jdbc:h2:mem:exam_db
+#    username: minich
+#    password: kakaopayExam123!@#
+  datasource:
+    schema:
+    - classpath:/sqlmap/scripts/create_table.sql
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  type-aliases-package: com.kakaopay.minich.exam.vo
+  mapper-locations: classpath:/sqlmap/mappers/h2/**/*.xml
+
+logging:
+  level: 
+    com.kakaopay.minich.exam.mapper: TRACE

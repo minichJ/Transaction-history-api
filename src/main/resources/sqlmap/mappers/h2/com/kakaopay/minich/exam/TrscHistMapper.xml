@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kakaopay.minich.exam.mapper.TrscHistMapper">
+	
+	<!-- 고객 맵 -->
+	<resultMap id="cstmrMap" type="java.util.HashMap">
+        <result javaType="java.lang.Integer"		property="year"			column="YEAR"		/>
+        <result javaType="java.lang.String"			property="name"			column="NAME"		/>
+        <result javaType="java.lang.String"			property="acctNo"		column="ACCT_NO" 	/>
+  	</resultMap>
+	
+	<!-- 관리점 맵 -->
+	<resultMap id="brMap" type="java.util.HashMap">
+        <result javaType="java.lang.String"			property="brName"		column="BR_NAME"	/>
+        <result javaType="java.lang.String"			property="brCode"		column="BR_CODE" 	/>
+        <result javaType="java.lang.Integer"		property="sumAmt"		column="SUM_AMT"	/>
+  	</resultMap>
+	
+	<!-- 고객별 거래 합계 금액 추출 -->
+	<sql id="getTrscAcctWith">
+		WITH RECURSIVE TMP(YEAR, NAME, ACCT_NO, SUM_AMT) AS ( 
+		        SELECT SUBSTRING(TH.TRSC_DT, 1, 4) AS YEAR 
+		             , AI.ACCT_NM AS NAME 
+		             , TH.ACCT_NO 
+		             , SUM(TH.TRSC_AMT - TH.TRSC_FEE) AS SUM_AMT 
+		          FROM TRSC_HIST TH 
+		        LEFT OUTER JOIN ACCT_INFO AI 
+		            ON TH.ACCT_NO = AI.ACCT_NO 
+		         WHERE 1 = 1 
+		           AND TH.CANCEL_YN = 'N' 
+		         GROUP BY SUBSTRING(TH.TRSC_DT, 1, 4), AI.ACCT_NM, TH.ACCT_NO   
+		) 	
+	</sql>
+	
+	<!-- 거래내역 연도 목록 -->
+	<select id="selectTrscHistYearList" resultType="java.lang.Integer">
+        SELECT DISTINCT SUBSTRING(TRSC_DT, 1, 4) AS YEAR
+          FROM TRSC_HIST
+         ORDER BY 1 ASC
+	</select>
+	
+	<!-- 지점 목록 -->
+	<select id="selectBrList" resultType="java.util.HashMap">
+		SELECT BI.BR_CODE, BI.BR_NAME
+		  FROM BR_INFO BI
+	</select>
+	
+	<!-- 1.연도별 합계 금액이 가장 많은 고객 목록 -->
+	<select id="selectYearSumPriceCstmr" resultType="TrscHistVO">
+		SELECT * 
+		   FROM ( 
+				<include refid="getTrscAcctWith" />
+				SELECT YEAR 
+				     , NAME 
+				     , ACCT_NO 
+				     , SUM_AMT 
+				     , RANK() OVER(PARTITION BY YEAR ORDER BY SUM_AMT DESC) AS RNK 
+				  FROM TMP ) 
+		WHERE RNK = 1 
+	</select>
+	
+	<!-- 2.연도별 거래가 없는 고객 목록 -->
+	<!-- 조건: 1) 한건도 거래가 없거나 
+	          2) 한건 이상의 거래가 있는데 모든 건이 취소된 고객을 추출 -->
+	<select id="selectYearNoTrscCstmr" resultMap="cstmrMap">
+		SELECT CAST(#{year, jdbcType=VARCHAR} AS INT) AS YEAR, AI.ACCT_NM AS NAME, AI.ACCT_NO
+		   FROM ACCT_INFO AI
+		 WHERE NOT EXISTS (SELECT 1
+		                     FROM TRSC_HIST TH
+		                    WHERE AI.ACCT_NO = TH.ACCT_NO
+		                      AND SUBSTRING(TH.TRSC_DT, 1, 4) = #{year} )
+		UNION
+		SELECT CAST(#{year, jdbcType=VARCHAR} AS INT) AS YEAR, T1.ACCT_NM, T2.ACCT_NO
+		  FROM ACCT_INFO T1
+		LEFT OUTER JOIN (SELECT TH.ACCT_NO
+		                      , SUM(CASE WHEN CANCEL_YN = 'Y' THEN 1 ELSE 0 END) AS CANCEL_CNT
+		                      , COUNT(ACCT_NO) AS TRSC_CNT
+		                  FROM TRSC_HIST TH
+		                 WHERE SUBSTRING(TH.TRSC_DT, 1, 4) = #{year}
+		                 GROUP BY TH.ACCT_NO) T2
+		        ON T1.ACCT_NO = T2.ACCT_NO
+		WHERE T2.CANCEL_CNT = T2.TRSC_CNT
+		ORDER BY 3 ASC
+	</select>
+
+	<!-- 3.연도별 관리점별 거래금액 합계 목록 -->
+	<select id="selectYearSumPriceBr" resultMap="brMap">
+		<include refid="getTrscAcctWith" />
+		SELECT BI.BR_NAME, BI.BR_CODE, SUM(TMP.SUM_AMT) AS SUM_AMT
+		   FROM BR_INFO BI
+		 LEFT OUTER JOIN ACCT_INFO AI
+		        ON BI.BR_CODE = AI.BR_CODE
+		LEFT OUTER JOIN TMP 
+		        ON AI.ACCT_NO = TMP.ACCT_NO
+		WHERE 1 = 1
+		     AND YEAR = #{year}
+		GROUP BY BI.BR_NAME, BI.BR_CODE
+		ORDER BY SUM(TMP.SUM_AMT) DESC
+	</select>
+
+	<!-- 4.연도별 관리점별 거래금액 합계 목록 -->
+	<!-- 제약 조건 : 분당점의 경우 판교점과 통폐합하였으므로 판교점 조회시 같이 출력 -->
+	<select id="selectSumPriceBr" resultMap="brMap">
+		<include refid="getTrscAcctWith" />
+		SELECT #{brName} AS BR_NAME, #{brCode} AS BR_CODE, SUM(TMP.SUM_AMT) AS SUM_AMT
+		   FROM BR_INFO BI
+		 LEFT OUTER JOIN ACCT_INFO AI
+		        ON BI.BR_CODE = AI.BR_CODE
+		LEFT OUTER JOIN TMP 
+		        ON AI.ACCT_NO = TMP.ACCT_NO
+		WHERE 1 = 1
+		  AND BI.BR_CODE IN 
+			<foreach collection="brCdList" item="items" open="(" close=")" separator=",">
+				#{items}
+			</foreach>		
+	</select>
+	
+</mapper>
