@@ -69,6 +69,7 @@ url: http://localhost:8088
 * 단위 테스트의 경우 junit을 통하여 url에 대한 호출 및 응답에 대한 테스트를 수행
   
   
+  
 ### API 정보  
 #### 1. 기본 정보  
 1.1 Data type : json  
